@@ -1019,6 +1019,38 @@
   var bigUntil = 0;
   var bigShift = 0;
 
+  // ---------- Пауза для экономии батареи ----------
+  // Рендер стоит на паузе, когда вкладка неактивна или логотип
+  // вне экрана (пользователь читает секции ниже)
+  var rafId = 0;
+  var running = false;
+  var logoVisible = true;
+
+  function startLoop() {
+    if (running) return;
+    running = true;
+    rafId = requestAnimationFrame(draw);
+  }
+
+  function stopLoop() {
+    if (!running) return;
+    running = false;
+    cancelAnimationFrame(rafId);
+  }
+
+  function syncLoop() {
+    if (document.hidden || !logoVisible) stopLoop();
+    else startLoop();
+  }
+
+  document.addEventListener('visibilitychange', syncLoop);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      logoVisible = entries[0].isIntersecting;
+      syncLoop();
+    }, { threshold: 0 }).observe(logo);
+  }
+
   // ---------- Инициализация ----------
   function setup() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -1360,7 +1392,8 @@
       document.head.appendChild(link);
     }
 
-    requestAnimationFrame(draw);
+    // Следующий кадр — только пока цикл не на паузе
+    if (running) rafId = requestAnimationFrame(draw);
   }
 
   // Отладочный хук: состояние анимации
@@ -1371,14 +1404,16 @@
       activeStrips: strips.length,
       activeBeams: beams.length,
       bigShiftActive: lastT < bigUntil,
-      nextStripIn: Math.max(0, Math.round(nextStripAt - lastT))
+      nextStripIn: Math.max(0, Math.round(nextStripAt - lastT)),
+      paused: !running,
+      logoVisible: logoVisible
     };
   };
 
   buildNoise(fineTiles, 512, 235);    // мелкое зерно
   buildNoise(coarseTiles, 96, 255);   // крупное зерно
   setup();
-  requestAnimationFrame(draw);
+  startLoop();
 })();
 
 // ============================================================
@@ -1422,7 +1457,11 @@
   }
 
   chatLoop();
-  setInterval(chatLoop, 9000);
+  // В неактивной вкладке демо-диалог не тикает — экономим батарею
+  setInterval(function () {
+    if (document.hidden) return;
+    chatLoop();
+  }, 9000);
 
   // ============================================================
   //  Минималистичные раскрывашки FAQ / Приватность:
