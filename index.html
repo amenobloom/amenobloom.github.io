@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEPLO — Telegram-боты под ключ</title>
+<!-- Open Graph / Twitter (og:image замените на абсолютный URL после выкладки сайта) -->
+<meta property="og:title" content="TEPLO — Telegram-боты под ключ">
+<meta property="og:description" content="Боты, которые не крадут время, а возвращают его. Магазины, AI-ассистенты, запись и рассылки — от 15 000 ₽, запуск от 3 дней.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card {
+    text-align: center;
+    padding: 48px 24px 56px;
+    max-width: 760px;
+    width: 100%;
+    margin: auto;
+  }
+
+  /* Логотип — глитч-сфера с кольцами (по видео-референсу) */
+  #logo {
+    width: 260px;
+    height: 260px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin: 30px 0 10px;
+    font-size: clamp(2.4rem, 7vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    color: #fff;
+  }
+
+  h1 b { font-weight: 800; }
+
+  .role {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ff4d6d, #4dffaf, #4d9dff, #ff4d6d);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: rgbflow 6s linear infinite;
+  }
+
+  @keyframes rgbflow {
+    to { background-position: 300% 0; }
+  }
+
+  .bio {
+    color: #9a9a9a;
+    line-height: 1.75;
+    margin: 26px auto;
+    max-width: 46ch;
+    font-size: 0.95rem;
+  }
+
+  /* Лозунг — с отступом от основного текста */
+  .slogan {
+    margin: 24px auto 0;
+    padding: 0 16px;
+    font-size: clamp(0.8rem, 3.6vw, 0.95rem);
+    font-style: italic;
+    line-height: 1.6;
+    color: #b9b9b9;
+  }
+
+  .slogan::before {
+    content: "— ";
+    color: #4dffaf;
+  }
+
+  .services .price {
+    display: block;
+    margin-top: 10px;
+    color: #4dffaf;
+    font-family: Consolas, Menlo, monospace;
+    font-size: 0.82rem;
+  }
+
+  .skills {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 0;
+    margin: 0 0 34px;
+  }
+
+  .skills li {
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    padding: 7px 15px;
+    font-size: 0.8rem;
+    color: #b5b5b5;
+    transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+  }
+
+  .skills li:hover {
+    border-color: #5a5a5a;
+    color: #fff;
+    box-shadow: 0 0 14px rgba(120, 160, 255, 0.25);
+  }
+
+  .contacts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .contacts a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #cfcfcf;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 6px 2px;
+    transition: color 0.25s, text-shadow 0.25s;
+  }
+
+  .contacts a:hover {
+    color: #fff;
+    text-shadow: 0 0 14px rgba(130, 180, 255, 0.9);
+  }
+
+  .contacts svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  /* --- Секции визитки --- */
+  .section-title {
+    margin: 48px 0 18px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #6d6d6d;
+  }
+
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 1px;
+    margin: 12px auto 0;
+    background: linear-gradient(90deg, #ff4d6d, #4dffaf, #4d9dff);
+  }
+
+  /* Услуги — карточки */
+  .services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .services li {
+    border: 1px solid #232323;
+    border-radius: 14px;
+    padding: 16px 18px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.015);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+
+  .services li:hover {
+    border-color: #3a3a3a;
+    box-shadow: 0 0 18px rgba(120, 160, 255, 0.18);
+    transform: translateY(-2px);
+  }
+
+  .services b {
+    display: block;
+    color: #f0f0f0;
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+  }
+
+  .services span {
+    color: #8f8f8f;
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  /* Портфолио: третий проект — по центру секции */
+  .portfolio li:nth-child(3) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(348px, 100%);
+  }
+
+  /* Мини-диалог с ботом (стиль Telegram) */
+  .chat {
+    max-width: 380px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .bubble {
+    max-width: 84%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s, transform 0.35s;
+  }
+
+  .bubble.show { opacity: 1; transform: none; }
+
+  .bubble.user {
+    align-self: flex-end;
+    background: #212121;
+    border-bottom-right-radius: 4px;
+    color: #d6d6d6;
+    font-family: Consolas, Menlo, monospace;
+  }
+
+  .bubble.bot {
+    align-self: flex-start;
+    background: #2b5278;
+    border-bottom-left-radius: 4px;
+    color: #fff;
+  }
+
+  .bubble.typing { padding: 12px 15px; }
+
+  .bubble.typing i {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: #9dc0e8;
+    animation: tgdot 1.1s infinite;
+  }
+
+  .bubble.typing i:nth-child(2) { animation-delay: 0.18s; }
+  .bubble.typing i:nth-child(3) { animation-delay: 0.36s; margin-right: 0; }
+
+  @keyframes tgdot {
+    0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+  }
+
+  /* --- Кнопка-ссылка «Заказать бота» --- */
+  .order-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    /* по центру между «Почему TEPLO» и контактами */
+    margin: 0 0 34px;
+    padding: 13px 32px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-decoration: none;
+    /* RGB-рамка: тёмная заливка в padding-box + анимированный
+       градиент в border-box (прозрачная рамка 2px) */
+    background:
+      linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+      linear-gradient(90deg, #ff4d6d, #4dffaf, #4d9dff, #ff4d6d) border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation: btnrgb 6s linear infinite;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  @keyframes btnrgb {
+    to { background-position: 0 0, 300% 0; }
+  }
+
+  .order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 26px rgba(120, 200, 255, 0.35);
+  }
+
+  .order-btn svg { width: 16px; height: 16px; }
+
+  /* --- Чат-виджет «Обсудить проект» --- */
+  .chat-fab {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 58px;
+    height: 58px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: conic-gradient(from 0deg, #ff4d6d, #4dffaf, #4d9dff, #ff4d6d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 70;
+    animation: fabpulse 2.6s ease-in-out infinite;
+    transition: transform 0.2s;
+  }
+
+  .chat-fab:hover { transform: scale(1.07); }
+
+  .chat-fab svg { width: 26px; height: 26px; color: #000; }
+
+  @keyframes fabpulse {
+    0%, 100% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 0 0 0 rgba(120, 200, 255, 0.45); }
+    50% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 0 0 14px rgba(120, 200, 255, 0); }
+  }
+
+  .chat-badge {
+    display: none;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #ff4d6d;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chat-badge.show {
+    display: flex;
+    animation: badgepop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+  }
+
+  @keyframes badgepop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .chat-teaser {
+    display: none;
+    position: fixed;
+    right: 94px;
+    bottom: 34px;
+    max-width: 210px;
+    padding: 10px 14px;
+    background: #2b5278;
+    color: #fff;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    border-radius: 14px 14px 4px 14px;
+    cursor: pointer;
+    z-index: 65;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .chat-teaser.show { display: block; animation: fadeup 0.4s ease; }
+
+  .chat-teaser:hover { filter: brightness(1.12); }
+
+  .chat-panel {
+    position: fixed;
+    right: 22px;
+    bottom: 94px;
+    width: min(340px, calc(100vw - 44px));
+    height: min(460px, calc(100vh - 140px));
+    background: #0d0d0d;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 80;
+    transform-origin: bottom right;
+    transform: scale(0.6) translateY(24px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.25s;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+  }
+
+  .chat-panel.open {
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .chat-head {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+    border-bottom: 1px solid #222;
+    background: #101010;
+  }
+
+  .chat-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #ff4d6d, #4dffaf, #4d9dff, #ff4d6d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .chat-avatar svg { width: 17px; height: 17px; color: #000; }
+
+  .chat-title { text-align: left; }
+
+  .chat-title b {
+    display: block;
+    font-size: 0.88rem;
+    color: #fff;
+  }
+
+  .chat-title .status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    color: #4dffaf;
+  }
+
+  .chat-title .status i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4dffaf;
+    box-shadow: 0 0 6px #4dffaf;
+    animation: online 2.2s ease-in-out infinite;
+  }
+
+  @keyframes online {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+
+  .chat-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+
+  .chat-close:hover { color: #fff; }
+
+  .chat-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chat-msgs::-webkit-scrollbar { width: 6px; }
+  .chat-msgs::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+
+  .chat-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 10px;
+  }
+
+  .chat-quick button {
+    background: #161616;
+    border: 1px solid #2a2a2a;
+    color: #cfcfcf;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .chat-quick button:hover { border-color: #4d9dff; color: #fff; }
+
+  .chat-input {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid #222;
+    background: #101010;
+  }
+
+  .chat-input input {
+    flex: 1;
+    min-width: 0;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    padding: 9px 14px;
+    color: #e8e8e8;
+    font: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .chat-input input:focus { border-color: #3d6ea5; }
+
+  .chat-input button {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #4d9dff, #4dffaf);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .chat-input button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(77, 157, 255, 0.5);
+  }
+
+  .chat-input button svg { width: 16px; height: 16px; }
+
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Появление при прокрутке */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.on { opacity: 1; transform: none; }
+
+  footer {
+    margin-top: 44px;
+    color: #4d4d4d;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <canvas id="logo" aria-label="Логотип: глитч-сфера с зерном, RGB-расщеплением и кольцами"></canvas>
+
+  <h1><b>TEPLO</b></h1>
+  <p class="role">Telegram-боты под ключ · Автоматизация · Поддержка 24/7</p>
+
+  <p class="bio">
+    Проектирую и запускаю Telegram-ботов, которые берут рутину на себя:
+    принимают оплату, ведут запись клиентов, отвечают на вопросы
+    и рассылают уведомления — пока вы занимаетесь делом.
+  </p>
+
+  <p class="slogan">Боты, которые не крадут время, а возвращают его.</p>
+
+  <ul class="skills">
+    <li>Python · aiogram</li>
+    <li>Node.js · Telegraf</li>
+    <li>Telegram Bot API</li>
+    <li>Telegram Stars / Payments</li>
+    <li>Mini Apps (WebApps)</li>
+    <li>ИИ-ассистенты (GPT)</li>
+    <li>Webhooks + VPS</li>
+    <li>Админ-панели</li>
+  </ul>
+
+  <h2 class="section-title reveal">Демо</h2>
+  <div class="chat reveal" aria-label="Демо-диалог с ботом">
+    <div class="bubble user" id="bUser">/start</div>
+    <div class="bubble bot typing" id="bTyping"><i></i><i></i><i></i></div>
+    <div class="bubble bot" id="bBot">Привет! Это визитка TEPLO — здесь собирают Telegram-ботов. Напишите мне, и соберём вашего 🤖</div>
+  </div>
+
+  <h2 class="section-title reveal">Услуги</h2>
+  <ul class="services reveal">
+    <li>
+      <b>📣 Рассылки и уведомления</b>
+      <span>Сегменты аудитории, кнопки, авто-воронки и аккуратный антиспам.</span>
+      <span class="price">от 15 000 ₽</span>
+    </li>
+    <li>
+      <b>📅 Запись и расписания</b>
+      <span>Бронирование слотов, напоминания, синхронизация с календарём.</span>
+      <span class="price">от 25 000 ₽</span>
+    </li>
+    <li>
+      <b>🛒 Бот-магазин</b>
+      <span>Каталог, корзина, оплата Telegram Stars и картой, статусы заказов и чеки.</span>
+      <span class="price">от 40 000 ₽</span>
+    </li>
+    <li>
+      <b>🤖 AI-ассистент</b>
+      <span>Отвечает клиентам на базе GPT и вашей базы знаний — в живом тоне, круглосуточно.</span>
+      <span class="price">от 45 000 ₽</span>
+    </li>
+  </ul>
+
+  <h2 class="section-title reveal">Портфолио</h2>
+  <ul class="services portfolio reveal">
+    <li>
+      <b>🛍 Мерч-магазин</b>
+      <span>Каталог в один экран, оплата Stars, чеки и статусы доставки — конверсия выросла на 34%.</span>
+    </li>
+    <li>
+      <b>🎓 AI-поддержка онлайн-школы</b>
+      <span>GPT-ассистент на базе знаний курса закрывает 80% обращений, эскалация оператору — за 5 минут.</span>
+    </li>
+    <li>
+      <b>💈 Бот записи для барбершопа</b>
+      <span>Слоты, напоминания за 24 часа и за час, синхронизация с календарём — 60% записи без звонков.</span>
+    </li>
+  </ul>
+
+  <h2 class="section-title reveal">Почему TEPLO</h2>
+  <ul class="skills reveal">
+    <li>Запуск от 3 дней</li>
+    <li>Код остаётся у вас</li>
+    <li>Мониторинг и поддержка</li>
+    <li>Оплата один раз — без подписок</li>
+  </ul>
+
+  <a class="order-btn reveal" id="orderBtn" href="https://t.me/watchingfromadistance" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.9l-.38 5.36c.55 0 .79-.24 1.08-.52l2.6-2.48 5.38 3.94c.99.55 1.69.26 1.96-.9l3.55-16.63c.32-1.45-.52-2.02-1.47-1.66L1.5 10.03c-1.42.55-1.4 1.34-.24 1.7l5.32 1.66L18.66 6.3c.58-.38 1.11-.17.68.21L9.04 15.9z"/></svg>
+    Заказать бота
+  </a>
+
+  <!-- Контакты: email и телефон — плейсхолдеры, замените на свои -->
+  <ul class="contacts">
+    <li>
+      <a href="mailto:teplo5627@gmail.com">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        teplo5627@gmail.com
+      </a>
+    </li>
+    <li>
+      <a href="https://t.me/watchingfromadistance" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.9l-.38 5.36c.55 0 .79-.24 1.08-.52l2.6-2.48 5.38 3.94c.99.55 1.69.26 1.96-.9l3.55-16.63c.32-1.45-.52-2.02-1.47-1.66L1.5 10.03c-1.42.55-1.4 1.34-.24 1.7l5.32 1.66L18.66 6.3c.58-.38 1.11-.17.68.21L9.04 15.9z"/></svg>
+        @watchingfromadistance
+      </a>
+    </li>
+  </ul>
+
+  <footer>© 2026 TEPLO · TELEGRAM-БОТЫ ПОД КЛЮЧ</footer>
+</main>
+
+<!-- Чат-виджет «Обсудить проект» -->
+<button class="chat-fab" id="chatFab" type="button" aria-label="Обсудить проект — открыть чат" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.9l-.38 5.36c.55 0 .79-.24 1.08-.52l2.6-2.48 5.38 3.94c.99.55 1.69.26 1.96-.9l3.55-16.63c.32-1.45-.52-2.02-1.47-1.66L1.5 10.03c-1.42.55-1.4 1.34-.24 1.7l5.32 1.66L18.66 6.3c.58-.38 1.11-.17.68.21L9.04 15.9z"/></svg>
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<div class="chat-teaser" id="chatTeaser" role="button" tabindex="0">Обсудим вашего бота? 💬</div>
+
+<section class="chat-panel" id="chatPanel" aria-label="Чат с ботом TEPLO" aria-hidden="true">
+  <header class="chat-head">
+    <div class="chat-avatar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.9l-.38 5.36c.55 0 .79-.24 1.08-.52l2.6-2.48 5.38 3.94c.99.55 1.69.26 1.96-.9l3.55-16.63c.32-1.45-.52-2.02-1.47-1.66L1.5 10.03c-1.42.55-1.4 1.34-.24 1.7l5.32 1.66L18.66 6.3c.58-.38 1.11-.17.68.21L9.04 15.9z"/></svg>
+    </div>
+    <div class="chat-title">
+      <b>TEPLO Bot</b>
+      <span class="status"><i></i>online — обсудим проект</span>
+    </div>
+    <button class="chat-close" id="chatClose" type="button" aria-label="Закрыть чат">×</button>
+  </header>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="chat-quick" id="chatQuick">
+    <button type="button" data-msg="Заказать бота">🚀 Заказать бота</button>
+    <button type="button" data-msg="Сколько стоит?">💰 Сколько стоит?</button>
+    <button type="button" data-msg="Какие сроки?">⏱ Какие сроки?</button>
+  </div>
+  <form class="chat-input" id="chatForm">
+    <input id="chatField" type="text" placeholder="Написать боту…" maxlength="200" autocomplete="off" aria-label="Сообщение боту">
+    <button type="submit" aria-label="Отправить сообщение">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </form>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  // ============================================================
+  //  Глитч-сфера по видео-референсу:
+  //  • средне-серая поверхность с очень сильным анимированным
+  //    зерном (мелкое + крупное), свет сверху-слева;
+  //  • хроматическая аберрация: RGB-каналы сферы со сдвигом;
+  //  • локальные горизонтальные глитч-полосы со смещением
+  //    и расщеплением каналов;
+  //  • кольца — тонкие яркие линии, каждая из R/G/B-компонент;
+  //  • гало циклически тёплое ↔ холодное; фон чисто чёрный.
+  // ============================================================
+
+  var SIZE = 260;              // CSS-размер логотипа
+  var C = SIZE / 2;
+  var logo = document.getElementById('logo');
+  var ctx = logo.getContext('2d');
+
+  var DPR = 1, R = 0;
+  var baseC, baseX;            // база сферы (градиент + зерно)
+  var sphC, sphX;              // собранная сфера (для глитч-полос)
+  var chanR, chanG, chanB;     // RGB-каналы
+  var fineTiles = [], coarseTiles = [];
+  var favDone = false;
+  var lastT = 0;
+
+  // Состояние глитчей
+  var strips = [];             // активные горизонтальные полосы
+  var beams = [];              // диагональные глитч-лучи
+  var nextStripAt = 400;
+  var nextBigAt = 1200;        // следующий «большой» сдвиг каналов
+  var bigUntil = 0;
+  var bigShift = 0;
+
+  // ---------- Инициализация ----------
+  function setup() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    logo.width = SIZE * DPR;
+    logo.height = SIZE * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    R = SIZE * 0.30;
+
+    function mk() {
+      var c = document.createElement('canvas');
+      c.width = SIZE * DPR;
+      c.height = SIZE * DPR;
+      return c;
+    }
+    baseC = mk(); baseX = baseC.getContext('2d');
+    sphC = mk();  sphX = sphC.getContext('2d');
+    chanR = mk(); chanG = mk(); chanB = mk();
+  }
+
+  // ---------- Шумовые тайлы ----------
+  function buildNoise(tiles, s, amount) {
+    for (var k = 0; k < 3; k++) {
+      var c = document.createElement('canvas');
+      c.width = s; c.height = s;
+      var x = c.getContext('2d');
+      var img = x.createImageData(s, s);
+      var d = img.data;
+      for (var i = 0; i < d.length; i += 4) {
+        var n = Math.max(0, Math.min(255, 128 + (Math.random() - 0.5) * amount));
+        d[i] = n; d[i + 1] = n; d[i + 2] = n; d[i + 3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+      tiles.push(c);
+    }
+  }
+
+  // ---------- База сферы ----------
+  function buildBase(t) {
+    var x = baseX;
+    x.setTransform(DPR, 0, 0, DPR, 0, 0);
+    x.globalCompositeOperation = 'source-over';
+    x.globalAlpha = 1;
+    x.clearRect(0, 0, SIZE, SIZE);
+
+    x.save();
+    x.beginPath();
+    x.arc(C, C, R, 0, Math.PI * 2);
+    x.clip();
+
+    // Свет сверху-слева с лёгким покачиванием
+    var lx = C - R * 0.38 + Math.sin(t * 0.00023) * R * 0.08;
+    var ly = C - R * 0.42 + Math.cos(t * 0.00019) * R * 0.06;
+
+    // Средне-серая планета с контрастным светом
+    var g = x.createRadialGradient(lx, ly, R * 0.04, C, C, R * 1.02);
+    g.addColorStop(0.0, '#ffffff');
+    g.addColorStop(0.22, '#d4d4d4');
+    g.addColorStop(0.5, '#9b9b9b');
+    g.addColorStop(0.78, '#3f3f3f');
+    g.addColorStop(1.0, '#0a0a0a');
+    x.fillStyle = g;
+    x.fillRect(0, 0, SIZE, SIZE);
+
+    // Мелкое зерно (вращается — поверхность «крутится»)
+    var spin = t * 0.0004;
+    var fine = fineTiles[Math.floor(t / 90) % fineTiles.length];
+    x.save();
+    x.translate(C, C);
+    x.rotate(spin);
+    x.globalCompositeOperation = 'overlay';
+    x.globalAlpha = 0.65;
+    x.drawImage(fine, -R * 1.6, -R * 1.6, R * 3.2, R * 3.2);
+    x.restore();
+
+    // Крупное зерно
+    var coarse = coarseTiles[Math.floor(t / 150) % coarseTiles.length];
+    x.globalCompositeOperation = 'overlay';
+    x.globalAlpha = 0.45;
+    x.drawImage(coarse, C - R, C - R, R * 2, R * 2);
+
+    // Блик
+    x.globalCompositeOperation = 'source-over';
+    x.globalAlpha = 1;
+    var spec = x.createRadialGradient(lx, ly, 0, lx, ly, R * 0.32);
+    spec.addColorStop(0, 'rgba(255,255,255,0.28)');
+    spec.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = spec;
+    x.fillRect(0, 0, SIZE, SIZE);
+
+    x.restore();
+  }
+
+  // ---------- RGB-каналы (клип по кругу — фон остаётся чёрным) ----------
+  function fillChannel(target, color) {
+    var x = target.getContext('2d');
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.globalCompositeOperation = 'source-over';
+    x.globalAlpha = 1;
+    x.clearRect(0, 0, target.width, target.height);
+    x.drawImage(baseC, 0, 0);
+    x.globalCompositeOperation = 'multiply';
+    x.save();
+    x.beginPath();
+    x.arc(C * DPR, C * DPR, R * DPR, 0, Math.PI * 2);
+    x.clip();
+    x.fillStyle = color;
+    x.fillRect(0, 0, target.width, target.height);
+    x.restore();
+  }
+
+  function composeSphere(shift, shiftY) {
+    var x = sphX;
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.globalCompositeOperation = 'source-over';
+    x.clearRect(0, 0, sphC.width, sphC.height);
+    x.globalCompositeOperation = 'lighter';
+    x.drawImage(chanR, -shift * DPR, -shiftY * DPR);
+    x.drawImage(chanG, 0, 0);
+    x.drawImage(chanB, shift * DPR, shiftY * DPR);
+    x.globalCompositeOperation = 'source-over';
+  }
+
+  // ---------- Кольца: тонкие линии из R/G/B-компонент ----------
+  var BANDS = [
+    { rx: 1.18, ry: 0.34, a: 0.65, w: 1.4 },
+    { rx: 1.32, ry: 0.32, a: 0.85, w: 1.8 },
+    { rx: 1.46, ry: 0.30, a: 0.60, w: 1.3 },
+    { rx: 1.58, ry: 0.28, a: 0.40, w: 1.1 },
+    { rx: 1.70, ry: 0.26, a: 0.25, w: 1.0 }
+  ];
+  var RING_CH = [
+    { col: '255,50,70', dx: -1.4, dt: -0.014 },
+    { col: '60,255,140', dx: 0, dt: 0 },
+    { col: '70,130,255', dx: 1.4, dt: 0.014 }
+  ];
+
+  function drawRings(front, tilt, o, I) {
+    var dim = 0.55 + 0.45 * I;   // в затишье кольца тоньше и тусклее
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var bi = 0; bi < BANDS.length; bi++) {
+      var b = BANDS[bi];
+      // Мерцание и дрожание радиуса на пике — ломают геометрическую ровность
+      var flick = 1 - (I > 0.5 ? Math.random() * 0.35 * I : 0);
+      var jitter = 1 + (I > 0.5 ? (Math.random() - 0.5) * 0.03 * I : 0);
+      for (var ci = 0; ci < RING_CH.length; ci++) {
+        var ch = RING_CH[ci];
+        var rx = R * b.rx * jitter, ry = rx * b.ry;
+        var a0 = front ? 0 : Math.PI;
+        var a1 = front ? Math.PI : Math.PI * 2;
+        // широкая тусклая подложка-свечение + яркое ядро
+        ctx.beginPath();
+        ctx.ellipse(C + ch.dx * o, C, rx, ry, tilt + ch.dt, a0, a1);
+        ctx.strokeStyle = 'rgba(' + ch.col + ',' + (b.a * 0.22 * dim * flick) + ')';
+        ctx.lineWidth = b.w * 3.2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(C + ch.dx * o, C, rx, ry, tilt + ch.dt, a0, a1);
+        ctx.strokeStyle = 'rgba(' + ch.col + ',' + Math.min(1, b.a * dim * flick) + ')';
+        ctx.lineWidth = b.w;
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // ---------- Глитч-полосы ----------
+  function maybeTriggerStrips(t, I) {
+    if (t < nextStripAt) return;
+    var n = 1 + Math.floor(Math.random() * 3);
+    strips = [];
+    for (var i = 0; i < n; i++) {
+      strips.push({
+        y: C - R + Math.random() * R * 2,
+        h: 5 + Math.random() * (24 + 26 * I),
+        dx: (Math.random() < 0.5 ? -1 : 1) * (4 + Math.random() * 18),
+        rgb: Math.random() < 0.75,
+        until: t + 80 + Math.random() * 260
+      });
+    }
+    // На пике — микро-строки для постоянной фрагментации
+    if (I > 0.55) {
+      var micro = 1 + Math.floor(Math.random() * 2);
+      for (var j = 0; j < micro; j++) {
+        strips.push({
+          y: C - R + Math.random() * R * 2,
+          h: 2 + Math.random() * 3,
+          dx: (Math.random() < 0.5 ? -1 : 1) * (2 + Math.random() * 5),
+          rgb: true,
+          until: t + 50 + Math.random() * 90
+        });
+      }
+    }
+    // На пике — диагональные глитч-лучи через весь кадр
+    if (I > 0.6 && Math.random() < 0.6) {
+      var nb = 1 + Math.floor(Math.random() * 2);
+      for (var k = 0; k < nb; k++) {
+        beams.push({
+          x1: Math.random() * SIZE,
+          y1: Math.random() * SIZE,
+          ang: Math.random() * Math.PI,
+          len: SIZE * (0.6 + Math.random() * 0.8),
+          until: t + 70 + Math.random() * 120
+        });
+      }
+    }
+    // на пике интенсивности полосы чаще
+    nextStripAt = t + 300 + (1 - I) * 1200 + Math.random() * 300;
+  }
+
+  function drawBeams(t) {
+    var alive = [];
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < beams.length; i++) {
+      var bm = beams[i];
+      if (t < bm.until) {
+        alive.push(bm);
+        var x2 = bm.x1 + Math.cos(bm.ang) * bm.len;
+        var y2 = bm.y1 + Math.sin(bm.ang) * bm.len;
+        var cols = ['rgba(255,60,80,0.5)', 'rgba(60,255,150,0.5)', 'rgba(80,140,255,0.5)'];
+        for (var c = 0; c < 3; c++) {
+          var off = (c - 1) * 2.5;
+          ctx.beginPath();
+          ctx.moveTo(bm.x1 + off, bm.y1);
+          ctx.lineTo(x2 + off, y2);
+          ctx.strokeStyle = cols[c];
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+    beams = alive;
+  }
+
+  function drawStrips(t) {
+    var alive = [];
+    for (var i = 0; i < strips.length; i++) {
+      var s = strips[i];
+      if (t < s.until) alive.push(s);
+      var sy = Math.max(0, Math.min(SIZE - 2, s.y)) * DPR;
+      var sh = Math.max(2, s.h) * DPR;
+      if (s.rgb) {
+        // Полоса из каналов: расщепление R/G/B
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.drawImage(chanR, 0, sy, SIZE * DPR, sh, s.dx - 3, s.y, SIZE, s.h);
+        ctx.drawImage(chanG, 0, sy, SIZE * DPR, sh, s.dx, s.y, SIZE, s.h);
+        ctx.drawImage(chanB, 0, sy, SIZE * DPR, sh, s.dx + 3, s.y, SIZE, s.h);
+        ctx.restore();
+      } else {
+        ctx.drawImage(sphC, 0, sy, SIZE * DPR, sh, s.dx, s.y, SIZE, s.h);
+      }
+    }
+    strips = alive;
+  }
+
+  // ---------- Гало: циклически тёплое ↔ холодное ----------
+  function drawHalo(t) {
+    var phase = Math.sin(t * 0.0009);
+    var warm = 0.05 + 0.05 * phase;
+    var cool = 0.05 + 0.05 * -phase;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    var g1 = ctx.createRadialGradient(C, C, R * 0.7, C, C, R * 1.75);
+    g1.addColorStop(0, 'rgba(255,150,70,' + warm + ')');
+    g1.addColorStop(1, 'rgba(255,150,70,0)');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    var g2 = ctx.createRadialGradient(C, C, R * 0.7, C, C, R * 1.75);
+    g2.addColorStop(0, 'rgba(70,150,255,' + cool + ')');
+    g2.addColorStop(1, 'rgba(70,150,255,0)');
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.restore();
+  }
+
+  // ---------- Волна интенсивности глитча (как в видео: пики и затишья) ----------
+  function glitchIntensity(t) {
+    var a = Math.sin(t * 0.00045);
+    var b = Math.sin(t * 0.00113 + 1.7);
+    var v = Math.max(0, a * 0.7 + b * 0.3);   // 0..1, нерегулярные волны
+    return 0.25 + 0.75 * v * v;
+  }
+
+  // ---------- Кадр ----------
+  function draw(t) {
+    lastT = t;
+    var I = glitchIntensity(t);                    // 0.25 (затишье) .. 1 (пик)
+    var tilt = t * 0.00025;                        // вращение колец
+    var o = 0.9 + 2.4 * I;                         // сдвиг компонент колец
+
+    // Сдвиг каналов сферы: плавный по волне интенсивности,
+    // изредка — «большой глитч»
+    var shift;
+    if (t >= nextBigAt) {
+      bigUntil = t + 90 + Math.random() * 120;
+      bigShift = (Math.random() < 0.5 ? -1 : 1) * (5 + Math.random() * 7);
+      nextBigAt = t + 1800 + Math.random() * 2400;
+    }
+    if (t < bigUntil) {
+      shift = bigShift;
+    } else {
+      shift = (1.2 + 1.2 * Math.sin(t * 0.0016)) * (0.4 + 1.1 * I);
+    }
+
+    // Чистый чёрный фон
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    drawHalo(t);
+    drawRings(false, tilt, o, I);   // задние половины колец
+
+    // Сфера: база → каналы → сборка (с вертикальной составляющей сдвига)
+    buildBase(t);
+    fillChannel(chanR, '#ff0000');
+    fillChannel(chanG, '#00ff00');
+    fillChannel(chanB, '#0000ff');
+    var shiftY = Math.sin(t * 0.0011) * 1.5 * I;
+    composeSphere(shift, shiftY);
+    ctx.drawImage(sphC, 0, 0, SIZE, SIZE);
+
+    // Глитч-полосы и диагональные лучи поверх сферы
+    maybeTriggerStrips(t, I);
+    drawStrips(t);
+    drawBeams(t);
+
+    drawRings(true, tilt, o, I);    // передние половины колец
+
+    // Favicon из первого кадра
+    if (!favDone) {
+      favDone = true;
+      var link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = logo.toDataURL('image/png');
+      document.head.appendChild(link);
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  // Отладочный хук: состояние анимации
+  window.__logoState = function () {
+    return {
+      tilt: lastT * 0.00025,
+      intensity: +glitchIntensity(lastT).toFixed(3),
+      activeStrips: strips.length,
+      activeBeams: beams.length,
+      bigShiftActive: lastT < bigUntil,
+      nextStripIn: Math.max(0, Math.round(nextStripAt - lastT))
+    };
+  };
+
+  buildNoise(fineTiles, 512, 235);    // мелкое зерно
+  buildNoise(coarseTiles, 96, 255);   // крупное зерно
+  setup();
+  requestAnimationFrame(draw);
+})();
+
+// ============================================================
+//  Интерактив визитки: появление секций при прокрутке
+//  и мини-диалог с ботом (/start → печатает → ответ)
+//  Скрипт сферы выше — не зависит и не изменяется.
+// ============================================================
+(function () {
+  'use strict';
+
+  var els = document.querySelectorAll('.reveal');
+
+  // Открываем блок, когда он входит в нижние 85% вьюпорта
+  // (или уже был проскроллен выше — устойчиво к резким прыжкам)
+  function updateReveals() {
+    var vh = window.innerHeight;
+    els.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      if (el.getBoundingClientRect().top < vh * 0.85) {
+        el.classList.add('on');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateReveals, { passive: true });
+  window.addEventListener('resize', updateReveals, { passive: true });
+  updateReveals();
+
+  var bUser = document.getElementById('bUser');
+  var bTyping = document.getElementById('bTyping');
+  var bBot = document.getElementById('bBot');
+
+  function chatLoop() {
+    bUser.classList.remove('show');
+    bTyping.classList.remove('show');
+    bBot.classList.remove('show');
+    setTimeout(function () { bUser.classList.add('show'); }, 400);
+    setTimeout(function () { bTyping.classList.add('show'); }, 1300);
+    setTimeout(function () { bTyping.classList.remove('show'); }, 3000);
+    setTimeout(function () { bBot.classList.add('show'); }, 3200);
+  }
+
+  chatLoop();
+  setInterval(chatLoop, 9000);
+
+  // ============================================================
+  //  Чат-виджет «Обсудить проект»: кнопка справа снизу,
+  //  локальный бот отвечает на сообщения по ключевым словам
+  // ============================================================
+  var chatFab = document.getElementById('chatFab');
+  var chatPanel = document.getElementById('chatPanel');
+  var chatClose = document.getElementById('chatClose');
+  var chatMsgs = document.getElementById('chatMsgs');
+  var chatForm = document.getElementById('chatForm');
+  var chatField = document.getElementById('chatField');
+  var chatQuick = document.getElementById('chatQuick');
+  var chatBadge = document.getElementById('chatBadge');
+  var chatTeaser = document.getElementById('chatTeaser');
+  var chatOpened = false;
+
+  var GREETING = 'Привет! 👋 Я бот TEPLO. Спросите про цены, сроки и оплату — или сразу закажите бота.';
+
+  var BOT_REPLIES = [
+    { re: /(привет|здравств|добрый|доброе|hi|hello|хай|^ку[\s!?.,])/i,
+      text: 'Привет! 👋 Рад видеть. Могу рассказать про услуги, цены и сроки — или сразу приступим к заказу.' },
+    { re: /(цен|стоим|стоит|сколько|руб|бюджет|\$)/i,
+      text: 'Стоимость зависит от задач: рассылки — от 15 000 ₽, бот записи — от 25 000 ₽, магазин — от 40 000 ₽, AI-ассистент — от 45 000 ₽. Точную смету дам после короткого брифа — напишите «заказать», начнём.' },
+    { re: /(срок|сколько времени|когда|быстро|долго|дедлайн)/i,
+      text: 'Простой бот запускается за 3–5 дней, сложный (магазин, AI, интеграции) — 1–2 недели. Сроки фиксируем до старта.' },
+    { re: /(заказ|нужен бот|нуженбот|хочу бот|магазин|ассистент|расписан|рассылк|автоматиз)/i,
+      text: 'Отлично! 🚀 Чтобы подобрать решение, ответьте: 1) что бот должен делать? 2) кто им будет пользоваться? Опишите в свободной форме.' },
+    { re: /(оплат|платеж|stars|звёзд|звезд|предоплат|чек|договор)/i,
+      text: 'Работаю по предоплате 50%, остаток — после приёмки. Принимаю карты, СБП и Telegram Stars. Договор и чеки — всегда.' },
+    { re: /(поддерж|сопровожд|мониторинг|правк)/i,
+      text: 'После запуска: 30 дней бесплатных правок, мониторинг 24/7. Дальше — поддержка от 3 000 ₽/мес по желанию.' },
+    { re: /(пример|портфолио|кейс|работы|показать)/i,
+      text: 'Последние работы: бот-магазин с оплатой Stars, AI-поддержка для онлайн-школы, бот записи для барбершопа. Подробности — в Telegram: @watchingfromadistance.' },
+    { re: /(контакт|связаться|почта|mail|телеграм|telegram|написать|куда)/i,
+      text: 'Быстрее всего — Telegram: @watchingfromadistance. Почта: teplo5627@gmail.com. Отвечаю в течение пары часов.' },
+    { re: /(спасибо|благодар|класс|круто|супер)/i,
+      text: 'Рад помочь! 🤖 Если созрели для бота — жмите «Заказать бота» или просто напишите «заказать».' },
+    { re: /(человек|оператор|teplo|автор)/i,
+      text: 'За этим ботом — TEPLO. Можете написать человеку напрямую: @watchingfromadistance — ответит в течение пары часов.' }
+  ];
+
+  function botAnswer(text) {
+    for (var i = 0; i < BOT_REPLIES.length; i++) {
+      if (BOT_REPLIES[i].re.test(text)) return BOT_REPLIES[i].text;
+    }
+    return 'Интересно! Я пока лучше всего отвечаю про цены 💰, сроки ⏱, оплату 💳 и заказы 🚀. Попробуйте кнопку ниже или напишите «заказать бота».';
+  }
+
+  function addMsg(text, who) {
+    var b = document.createElement('div');
+    b.className = 'bubble ' + who;
+    b.textContent = text;
+    chatMsgs.appendChild(b);
+    requestAnimationFrame(function () { b.classList.add('show'); });
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    return b;
+  }
+
+  function botSay(text) {
+    var t = document.createElement('div');
+    t.className = 'bubble bot typing';
+    t.innerHTML = '<i></i><i></i><i></i>';
+    chatMsgs.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add('show'); });
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    setTimeout(function () {
+      t.remove();
+      addMsg(text, 'bot');
+    }, 650 + Math.min(900, text.length * 8));
+  }
+
+  function openChat() {
+    chatPanel.classList.add('open');
+    chatPanel.setAttribute('aria-hidden', 'false');
+    chatFab.setAttribute('aria-expanded', 'true');
+    chatBadge.classList.remove('show');
+    chatTeaser.classList.remove('show');
+    if (!chatOpened) {
+      chatOpened = true;
+      botSay(GREETING);
+    }
+    setTimeout(function () { chatField.focus(); }, 350);
+  }
+
+  function closeChat() {
+    chatPanel.classList.remove('open');
+    chatPanel.setAttribute('aria-hidden', 'true');
+    chatFab.setAttribute('aria-expanded', 'false');
+  }
+
+  chatFab.addEventListener('click', function () {
+    if (chatPanel.classList.contains('open')) closeChat();
+    else openChat();
+  });
+
+  chatClose.addEventListener('click', closeChat);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeChat();
+  });
+
+  chatForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = chatField.value.trim();
+    if (!text) return;
+    addMsg(text, 'user');
+    chatField.value = '';
+    botSay(botAnswer(text));
+  });
+
+  chatQuick.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    addMsg(btn.getAttribute('data-msg'), 'user');
+    botSay(botAnswer(btn.getAttribute('data-msg')));
+  });
+
+  // Тизер и бейдж через 2.5 с, если чат ещё не открывали
+  setTimeout(function () {
+    if (chatOpened) return;
+    chatTeaser.classList.add('show');
+    chatBadge.classList.add('show');
+  }, 2500);
+
+  chatTeaser.addEventListener('click', function () { openChat(false); });
+  chatTeaser.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openChat(false); }
+  });
+})();
+</script>
+</body>
+</html>
