@@ -576,6 +576,135 @@
     to { opacity: 1; transform: none; }
   }
 
+  /* --- FAQ и приватность: минималистичные раскрывашки --- */
+  .extras { margin-top: 46px; }
+
+  .extras-toggle {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .extra-btn {
+    background: none;
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #cfcfcf;
+    padding: 10px 22px;
+    transition: color 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .extra-btn:hover {
+    color: #fff;
+    border-color: #5a5a5a;
+    box-shadow: 0 0 14px rgba(120, 160, 255, 0.25);
+  }
+
+  .extra-btn.active {
+    color: #fff;
+    border-color: #4d9dff;
+    box-shadow: 0 0 16px rgba(77, 157, 255, 0.3);
+  }
+
+  .extra-btn .ind {
+    display: inline-block;
+    margin-left: 8px;
+    color: #4dffaf;
+    transition: transform 0.3s;
+  }
+
+  .extra-btn.active .ind { transform: rotate(45deg); }
+
+  /* Плавное раскрытие панели */
+  .expand {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s ease;
+  }
+
+  .expand > div { overflow: hidden; min-height: 0; }
+
+  .expand.open { grid-template-rows: 1fr; }
+
+  /* Список FAQ: без рамок, тонкие разделители */
+  .faq {
+    max-width: 520px;
+    margin: 14px auto 0;
+    text-align: left;
+  }
+
+  .faq details { border-bottom: 1px solid #1c1c1c; }
+
+  .faq details:first-child { border-top: 1px solid #1c1c1c; }
+
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 14px 4px;
+    font-size: 0.9rem;
+    color: #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  .faq summary:hover { color: #fff; }
+
+  .faq summary::-webkit-details-marker { display: none; }
+
+  .faq summary::after {
+    content: "+";
+    flex: none;
+    color: #4dffaf;
+    font-size: 1.05rem;
+    transition: transform 0.25s;
+  }
+
+  .faq details[open] summary::after { transform: rotate(45deg); }
+
+  .faq .a {
+    padding: 0 4px 16px;
+    color: #8f8f8f;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    animation: fadeup 0.4s ease;
+  }
+
+  /* Политика: чистый текст без рамок */
+  .privacy-body {
+    max-width: 520px;
+    margin: 14px auto 0;
+    text-align: left;
+    color: #8f8f8f;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    animation: fadeup 0.4s ease;
+  }
+
+  .privacy-body h3 {
+    margin: 16px 0 6px;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #cfcfcf;
+  }
+
+  .privacy-body h3:first-child { margin-top: 0; }
+
+  .privacy-body p { margin: 0 0 8px; }
+
+  .privacy-body a { color: #4dffaf; text-decoration: none; }
+  .privacy-body a:hover { text-decoration: underline; }
+
   /* Появление при прокрутке */
   .reveal {
     opacity: 0;
@@ -695,6 +824,97 @@
       </a>
     </li>
   </ul>
+
+  <div class="extras reveal">
+    <div class="extras-toggle">
+      <button class="extra-btn" id="faqToggle" type="button" aria-expanded="false" aria-controls="faqPanel">FAQ <span class="ind">+</span></button>
+      <button class="extra-btn" id="privacyToggle" type="button" aria-expanded="false" aria-controls="privacyPanel">Приватность <span class="ind">+</span></button>
+    </div>
+
+    <div class="expand" id="faqPanel">
+      <div>
+        <div class="faq">
+          <details>
+            <summary>Что если бот сломается?</summary>
+            <div class="a">
+              Первые 30 дней после запуска все правки бесплатны. Веду мониторинг 24/7 —
+              обычно узнаю о сбое раньше, чем вы. Критичные падения чиню в день обращения,
+              некритичные — в течение 1–2 дней. Дальше — поддержка от 3 000 ₽/мес по желанию.
+            </div>
+          </details>
+          <details>
+            <summary>Чей будет код?</summary>
+            <div class="a">
+              Ваш. После финальной оплаты передаю исходный код, репозиторий и все доступы —
+              к серверу, боту и базам. Никаких лицензий, «аренды» функций или привязки
+              к конструкторам: бот полностью ваш.
+            </div>
+          </details>
+          <details>
+            <summary>Можно доработать бота потом?</summary>
+            <div class="a">
+              Да, боты собираю модульно: новые сценарии, интеграции и кнопки добавляются
+              без переписывания с нуля. Каждая доработка — фиксированная смета,
+              согласованная до начала работ.
+            </div>
+          </details>
+          <details>
+            <summary>Как проходит оплата?</summary>
+            <div class="a">
+              50% — предоплата, 50% — после приёмки. Принимаю карты, СБП и Telegram Stars.
+              Работаю по договору, предоставляю чеки.
+            </div>
+          </details>
+          <details>
+            <summary>Что нужно от меня для старта?</summary>
+            <div class="a">
+              15 минут на бриф: опишите задачу своими словами — в чате на этой странице
+              или в Telegram. Писать ТЗ не нужно, сценарии сформулирую сам и согласую с вами.
+            </div>
+          </details>
+          <details>
+            <summary>Мои данные и данные клиентов в безопасности?</summary>
+            <div class="a">
+              Бот хранит только необходимые данные, доступы выдаются по принципу минимума,
+              переписки и токены шифруются. Подписываю NDA по запросу.
+              Подробнее — в разделе «Приватность» рядом.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="expand" id="privacyPanel">
+      <div>
+        <div class="privacy-body">
+          <h3>Какие данные обрабатывает этот сайт</h3>
+          <p>
+            Сайт не использует файлы cookie, не подключает аналитику и трекеры.
+            Чат-виджет работает полностью в вашем браузере: сообщения не отправляются
+            на сервер и не сохраняются после закрытия страницы.
+          </p>
+          <h3>Переписка по контактам</h3>
+          <p>
+            Если вы пишете на почту <a href="mailto:teplo5627@gmail.com">teplo5627@gmail.com</a>
+            или в Telegram <a href="https://t.me/watchingfromadistance" target="_blank" rel="noopener">@watchingfromadistance</a>,
+            обработка сообщений регулируется правилами соответствующих сервисов.
+            Данные из переписки используются только для ответа на ваш запрос и подготовки сметы.
+          </p>
+          <h3>Данные клиентов в проектах</h3>
+          <p>
+            При разработке ботов заказчика собираю минимум данных, необходимый для задачи.
+            По запросу подписываю NDA и передаю доступы по принципу наименьших привилегий.
+          </p>
+          <h3>Изменения политики</h3>
+          <p>
+            Политика может обновляться — актуальная версия всегда на этой странице.
+            Вопросы по приватности: <a href="mailto:teplo5627@gmail.com">teplo5627@gmail.com</a>.
+          </p>
+          <p>Обновлено: октябрь 2026.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>© 2026 TEPLO · TELEGRAM-БОТЫ ПОД КЛЮЧ</footer>
 </main>
@@ -1140,13 +1360,13 @@
 
   var els = document.querySelectorAll('.reveal');
 
-  // Открываем блок, когда он входит в нижние 85% вьюпорта
-  // (или уже был проскроллен выше — устойчиво к резким прыжкам)
+  // Открываем блок, как только он появился во вьюпорте
+  // (без «мёртвой зоны» внизу экрана, где элемент невидим, но кликабелен)
   function updateReveals() {
     var vh = window.innerHeight;
     els.forEach(function (el) {
       if (el.classList.contains('on')) return;
-      if (el.getBoundingClientRect().top < vh * 0.85) {
+      if (el.getBoundingClientRect().top < vh) {
         el.classList.add('on');
       }
     });
@@ -1172,6 +1392,31 @@
 
   chatLoop();
   setInterval(chatLoop, 9000);
+
+  // ============================================================
+  //  Минималистичные раскрывашки FAQ / Приватность:
+  //  контент появляется только по клику на кнопку
+  // ============================================================
+  function wireToggle(btnId, panelId) {
+    var btn = document.getElementById(btnId);
+    var panel = document.getElementById(panelId);
+    btn.addEventListener('click', function () {
+      var open = panel.classList.toggle('open');
+      btn.classList.toggle('active', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      // При открытии подтягиваем кнопки к верху экрана —
+      // контент раскрывается в поле зрения, а не за нижним краем.
+      // Ждём завершения раскрытия панели (0.45s), иначе цель скролла
+      // считается по «старой» высоте страницы
+      if (open) {
+        setTimeout(function () {
+          btn.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 480);
+      }
+    });
+  }
+  wireToggle('faqToggle', 'faqPanel');
+  wireToggle('privacyToggle', 'privacyPanel');
 
   // ============================================================
   //  Чат-виджет «Обсудить проект»: кнопка справа снизу,
